@@ -1,0 +1,22 @@
+<!doctype html>
+
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>Users</title>
+</head>
+
+<body>
+     {% for u in users %}
+        <table>
+             <tr><td> Name: </td> <td> {{ u.username }} </td></tr>
+             <tr><td> Score: </td> <td> {{ u.score }} </td></tr>
+             <tr><td> Joined on:  </td> <td> {{ u.creation_date }} </td></tr>
+        </table>
+      <br><br>
+     {% endfor %}
+  <br><br>
+  <a href="logout">Logout</a>
+</body>
+</html>

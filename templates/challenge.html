@@ -1,0 +1,36 @@
+<!doctype html>
+
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>Challenges</title>
+</head>
+
+<body>
+        <table>
+
+          <form action="{{ challenge.id }}/start" method="get">
+              <input type="submit" value="Start" />
+          </form>
+          <form action="{{ challenge.id }}/stop" method="get">
+              <input type="submit" value="Stop" />
+          </form>
+          <br><br>
+          <form action="{{ challenge.id }}/validate" method="post">
+              {% csrf_token %}
+              <input type="text" placeholder="Enter flag" name="flag"><br>
+          <input type="submit" value="Validate" />
+          </form><br><br>
+
+
+             <tr><td> Name: </td> <td> {{ challenge.name }} </td></tr>
+             <tr><td> Description: </td> <td> {{ challenge.description }} </td></tr>
+             <tr><td> Validated: </td> <td> {{ challenge.validated }} </td></tr>
+             <tr><td> Is Active: </td> <td> {{ challenge.active }} </td></tr>
+        </table>
+      <br><br>
+  <br><br>
+  <a href="logout">Logout</a>
+</body>
+</html>
