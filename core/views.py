@@ -14,7 +14,7 @@ from revproxy.views import ProxyView
 
 from .models import User, Challenge, Container
 from .forms import RegisterForm, LoginForm
-from .docker import *
+from .container import *
 
 class Failure(JsonResponse):
     def __init__(self, msg={}):
@@ -124,10 +124,10 @@ def start_challenge(request, Id):
     if cf.exists():
         if request.user.container is None:
             container = Container(creation_date=timezone.now(), challenge=cf[0])
-            try:
-                container.docker_id = create_docker(cf[0].docker_name)
-            except CalledProccessError as e:
-                return Failure({'error' : str(e)})
+            #try:
+            container.docker_id = create_docker(cf[0].docker_name)
+            #except:
+            #    return Failure({'error' : 'Internal error'})
             container.save()
             request.user.container = container
             request.user.save()
@@ -144,10 +144,10 @@ def stop_challenge(request, Id):
     qs = Challenge.objects.filter(pk=Id)
     if qs.exists():
         if request.user.container is not None:
-            try:
-                stop_docker(request.user.container.docker_id)
-            except CalledProccessError as e:
-                return Failure({'error' : str(e)})
+            #try:
+            stop_docker(request.user.container.docker_id)
+            #except:
+            #    return Failure({'error' : 'Internal error'})
             request.user.container.delete()
             request.user.container = None
             request.user.save()
