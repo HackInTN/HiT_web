@@ -47,10 +47,10 @@ def user_login(request):
             if user is not None: #and user.is_active: TODO
                 login(request, user)
                 return redirect('/')
-
+        else:
+            return Failure({'errors' : form.errors})
     if request.method == "GET":
         return render(request, 'login.html', {'form' : LoginForm()})
-    return Failure()
 
 def user_register(request):
     if request.method == "POST":
@@ -65,7 +65,7 @@ def user_register(request):
             #send_mail TODO
             return redirect('/login')
         else:
-            Failure({'errors' : form.errors})
+            return Failure({'errors' : form.errors})
     if request.method == "GET":
         return render(request, 'register.html', {'form' : RegisterForm()})
 

@@ -41,7 +41,7 @@ class User(AbstractUser):
     creation_date = models.DateTimeField(null=True)
     validation_key = models.UUIDField(default=uuid4)
     container = models.OneToOneField(Container, null=True,
-                                     on_delete=models.DO_NOTHING)
+                                     on_delete=models.SET_NULL)
     solved = models.ManyToManyField(Challenge)
 
     @property
