@@ -21,8 +21,7 @@ et hop :D
 
 
 TODO
-
-    dockers dans un environnement distant
-    générer des flags aleatoirement
     faire le frontend
+    générer des flags aleatoirement
+    module gestion des dmz
     
