@@ -50,6 +50,8 @@ def user_login(request):
             if user is not None: #and user.is_active: TODO
                 login(request, user)
                 return redirect('/')
+            else:
+                return Failure({'errors' : ['user does not exists']})
         else:
             return Failure({'errors' : form.errors})
     if request.method == "GET":
