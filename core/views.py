@@ -1,7 +1,7 @@
 from time import sleep
 
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 #from django.core.mail import send_mail
@@ -37,6 +37,9 @@ class DockerMultiplexView(View):
             upstream = container_addr
 
         return DockerProxyView.as_view()(request, path)
+
+def reqLogin(request):
+    return render(request, 'plzLog.html')
 
 def user_login(request):
     if request.method == "POST":
@@ -120,6 +123,8 @@ def user_logout(request):
 
 @login_required
 def start_challenge(request, Id):
+    if request.method != "POST":
+        return
     cf = Challenge.objects.filter(pk=Id)
     if cf.exists():
         if request.user.container is None:
@@ -141,6 +146,8 @@ def start_challenge(request, Id):
 
 @login_required
 def stop_challenge(request, Id):
+    if request.method != "POST":
+        return
     qs = Challenge.objects.filter(pk=Id)
     if qs.exists():
         if request.user.container is not None:

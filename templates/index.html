@@ -1,23 +1,33 @@
 <!doctype html>
-
+{% load static from staticfiles %}
+<link rel="stylesheet" href="{% static "style.css" %}"/>
+<script type="text/javascript" src={% static "scripts.js" %}></script>
 <html>
+	<head>
+		<meta charset="utf-8">
+		<title>Welcome</title>
+	</head>
+	
 
-<head>
-<meta charset="utf-8">
-<title>Welcome</title>
-</head>
+	<body>
+		<nav>
+			<div class='menu'>
+				<a href="#" onclick='show_hide_connection();'>Login</a>
+				<a href="register">Register</a>
 
-
-<body>
-
-  <a href="login">Login</a><br>
-  <a href="register">Register</a><br>
-
-  <h4>**Registered zone**</h4>
-  <a href="challenges">Challenges</a><br>
-  <a href="users">Users</a><br>
-  <a href="/ex/">Re-join current challenge</a><br>
-  <a href="logout">Logout</a><br>
-  <h4>****</h4>
-</body>
+				<!--<h4>**Registered zone**</h4>-->
+				<a href="/challenges">Challenges</a>
+				<a href="/users">Users</a>
+				<a href="/ex/">Re-join current challenge</a>
+				<a href="/logout">Logout</a>
+				<!--<h4>****</h4>-->
+			</div>
+			<a href='/'><img src="{% static "images/logo.png" %}" height=60px ></a>
+		</nav>
+		<p> [twitter feed] </p>
+		{% include "login.html" %}
+		<footer>
+			HackInTn
+	</footer>
+	</body>
 </html>

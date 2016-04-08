@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'rest_framework',
     'core.apps.CoreConfig',
+    'dmz.apps.DmzConfig',
     'revproxy',
 ]
 
@@ -107,7 +108,7 @@ PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
-LOGIN_URL = '/login'
+#LOGIN_URL = '/login'
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -129,3 +130,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_REDIRECT_URL = '/reqLogin'
+LOGIN_URL = '/reqLogin'

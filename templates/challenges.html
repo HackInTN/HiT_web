@@ -1,13 +1,29 @@
 <!doctype html>
-
+{% load static from staticfiles %}
+<link rel="stylesheet" href="{% static "style.css" %}"/>
+<script type="text/javascript" src={% static "scripts.js" %}></script>
 <html>
-
 <head>
 <meta charset="utf-8">
 <title>Challenges</title>
 </head>
+	<body>
+		<nav>
+			<div class='menu'>
+				<a href="#" onclick='show_hide_connection();'>Login</a>
+				<a href="register">Register</a>
 
-<body>
+				<!--<h4>**Registered zone**</h4>-->
+				<a href="/challenges">Challenges</a>
+				<a href="/users">Users</a>
+				<a href="/ex/">Re-join current challenge</a>
+				<a href="/logout">Logout</a>
+				<!--<h4>****</h4>-->
+			</div>
+			<a href='/'><img src="{% static "images/logo.png" %}" height=60px ></a>
+		</nav>
+{% include "login.html" %}
+  <div id="content">
      {% for ch in challenges %}
         <table>
              <tr><td> Name: </td> <td> {{ ch.name }} </td></tr>
@@ -18,7 +34,10 @@
         </table>
       <br><br>
      {% endfor %}
-  <br><br>
-  <a href="logout">Logout</a>
-</body>
+	  <br><br>
+	</div>
+		<footer>
+			HackInTn
+		</footer>
+	</body>
 </html>

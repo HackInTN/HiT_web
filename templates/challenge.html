@@ -1,19 +1,39 @@
 <!doctype html>
+{% load static from staticfiles %}
+<link rel="stylesheet" href="{% static "style.css" %}"/>
+<script type="text/javascript" src="scripts.js"></script>
 
 <html>
-
 <head>
 <meta charset="utf-8">
 <title>Challenges</title>
 </head>
 
 <body>
-        <table>
+	<nav>
+		<div class='menu'>
+			<a href="#" onclick='show_hide_connection();'>Login</a>
+			<a href="register">Register</a>
 
-          <form action="{{ challenge.id }}/start" method="get">
+			<!--<h4>**Registered zone**</h4>-->
+			<a href="/challenges">Challenges</a>
+			<a href="/users">Users</a>
+			<a href="/ex/">Re-join current challenge</a>
+			<a href="/logout">Logout</a>
+			<!--<h4>****</h4>-->
+		</div>
+		<a href='/'><img src="{% static "images/logo.png" %}" height=60px ></a>
+	</nav>
+	{% include "login.html" %}
+
+<div id="content">
+        <table>
+          <form action="{{ challenge.id }}/start" method="post">
+              {% csrf_token %}
               <input type="submit" value="Start" />
           </form>
-          <form action="{{ challenge.id }}/stop" method="get">
+          <form action="{{ challenge.id }}/stop" method="post">
+              {% csrf_token %}
               <input type="submit" value="Stop" />
           </form>
           <br><br>
@@ -22,8 +42,6 @@
               <input type="text" placeholder="Enter flag" name="flag"><br>
           <input type="submit" value="Validate" />
           </form><br><br>
-
-
              <tr><td> Name: </td> <td> {{ challenge.name }} </td></tr>
              <tr><td> Description: </td> <td> {{ challenge.description }} </td></tr>
              <tr><td> Validated: </td> <td> {{ challenge.validated }} </td></tr>
@@ -31,6 +49,10 @@
         </table>
       <br><br>
   <br><br>
-  <a href="logout">Logout</a>
+</div>
+
+	<footer>
+			HackInTn
+	</footer>
 </body>
 </html>
