@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #'rest_framework',
     'core.apps.CoreConfig',
-    'dmz.apps.DmzConfig',
+    #'dmz.apps.DmzConfig',
     'revproxy',
 ]
 
