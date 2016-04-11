@@ -17,6 +17,7 @@ class Challenge(models.Model):
             'id' : int(self.id),
             'name' : str(self.name),
             'description' : str(self.description),
+            'value' : int(self.value),
         }
 
     def getFullDict(self, user):

@@ -89,6 +89,7 @@ border-radius : 15px 0px 15px 0px;
 	overflow: auto;
 	margin-top: 5%;
 	margin-left: 30%;
+        width: 50%;
 }
 
 #content input{
