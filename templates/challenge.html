@@ -36,11 +36,11 @@
 					{% endif %}
 					{% if challenge.is_docker or challenge.is_binary %}
 					<form action="{{ challenge.id }}/start" method="post">
-						{% csrf_token %}
-						<input type="submit" value="Start" />
-					</form>
-					<br><br>
-					{% endif %}
+              {% csrf_token %}
+              <input type="submit" value="Start" />
+          </form>
+          <br><br>
+          {% endif %}
           <form action="{{ challenge.id }}/validate" method="post">
               {% csrf_token %}
               <input type="text" placeholder="Enter flag" name="flag"><br>
