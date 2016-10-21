@@ -15,6 +15,7 @@ from revproxy.views import ProxyView
 from .models import User, Challenge, Container
 from .forms import RegisterForm, LoginForm
 from .container import *
+from .flag_validation import make_bin
 
 def failure(request, d={}):
     d["action"] = "failure"
@@ -124,22 +125,33 @@ def user_logout(request):
 def start_challenge(request, Id):
     if request.method != "POST":
         return failure(request, {'errors' : ['Bad http method']})
-    cf = Challenge.objects.filter(pk=Id)
-    if cf.exists():
-        if request.user.container is None:
-            container = Container(creation_date=timezone.now(), challenge=cf[0])
-            try:
-                container.docker_id = create_docker(cf[0].docker_name)
-            except Exception as e:
-                return failure(request, {'errors' : [str(e)]})
-            container.save()
-            request.user.container = container
-            request.user.save()
-            sleep(5) #waiting a few seconds before redirect is needed
-            return redirect('/ex/')
-        else:
-            return failure(request, {'errors' : ['A challenge is already started'],
-                            'challenge' : request.user.container.challenge.id})
+    ch = Challenge.objects.filter(pk=Id).first()
+    if ch is not None:
+        if ch.is_docker:
+            if request.user.container is None:
+                container = Container(creation_date=timezone.now(), challenge=ch)
+                try:
+                    container.docker_id = create_docker(ch.docker_name)
+                except Exception as e:
+                    return failure(request, {'errors' : [str(e)]})
+                container.save()
+                request.user.container = container
+                request.user.save()
+                sleep(5) #waiting a few seconds before redirect is needed
+                return redirect('/ex/')
+            else:
+                return failure(request, {'errors' : ['A docker challenge is already started'],
+                                'challenge' : request.user.container.challenge.id})
+        elif ch.is_binary:
+            binary = make_bin(request.user, ch)
+            response = HttpResponse(binary,
+                            content_type="application/octet-stream")
+            response['Content-disposition'] = "attachment; filename=crackme"
+
+            return response
+
+
+
     else:
         return failure(request, {'errors' : ['Challenge not found']})
 
@@ -165,14 +177,15 @@ def stop_challenge(request, Id):
 @login_required
 def validate_challenge(request, Id):
     if request.method == "POST":
-        qs = Challenge.objects.filter(pk=Id)
-        if qs.exists():
+        ch = Challenge.objects.filter(pk=Id).first()
+        if ch is not None:
              if "flag" in request.POST and \
-                 request.POST["flag"] == qs[0].flag:
-                 if request.user.solved.filter(pk=qs[0].pk):
-                     return Failure({'error' : 'Challenge already validated'})
-                 request.user.solved.add(qs[0])
-                 request.user.score += qs[0].value
+                          ch.check_flag(request.user, request.POST["flag"]):
+                 if request.user.solved.filter(pk=ch.pk):
+                     return failure(request,
+                                   {'errors' : ['Challenge already validated']})
+                 request.user.solved.add(ch)
+                 request.user.score += ch.value
                  request.user.save()
                  return redirect('/challenges')
              else:

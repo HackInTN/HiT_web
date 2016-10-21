@@ -28,7 +28,7 @@
 
 <div id="content">
         <table>
-          {% if challenge.is_docker %}
+          {% if challenge.is_docker or challenge.is_binary %}
           <form action="{{ challenge.id }}/start" method="post">
               {% csrf_token %}
               <input type="submit" value="Start" />
