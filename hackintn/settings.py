@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'x-9&*n@tn@#q2e_+0=*k=9x645_k^vg#z_0gwu#57_iq8nzm%e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     #'dmz.apps.DmzConfig',
     'revproxy',
+    'sslserver',
+    'captcha',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -81,7 +83,7 @@ WSGI_APPLICATION = 'hackintn.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'database/db.sqlite3'),
     }
 }
 
@@ -129,6 +131,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+STATIC_ROOT = '/home/ododo/HiT_web/static/'
 STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/reqLogin'
