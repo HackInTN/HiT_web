@@ -9,7 +9,7 @@ def crypt_b64(validation_key, flag):
 def make_bin(user, challenge):
     path = "challenges/bin/" + challenge.name
     encflag = challenge.getEncryptedFlag(user)
-    binary = subprocess.check_output("make --silent -C{} _FLAG_={} _ID_={}" \
+    binary = subprocess.check_output("make -s -C{} _FLAG_={} _ID_={}" \
                    .format(path, encflag.decode(), user.pk), shell=True)
-    subprocess.run("make clean -C" + path, shell=True)
+    subprocess.run("make -s clean -C" + path, shell=True)
     return binary
