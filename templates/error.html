@@ -1,17 +1,19 @@
 <!doctype html>
 {% load static from staticfiles %}
 <link rel="stylesheet" href="{% static "style.css" %}"/>
-<script type="text/javascript" src="scripts.js"></script>
+<script type="text/javascript" src={% static "scripts.js" %}></script>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Join</title>
-</head>
+	<head>
+		<meta charset="utf-8">
+		<title>Error occured</title>
+	</head>
+	
+
 	<body>
 		<nav>
 			<div class='menu'>
 				<a href="#" onclick='show_hide_connection();'>Login</a>
-				<a href="register">Register</a>
+				<a href="/register">Register</a>
 
 				<!--<h4>**Registered zone**</h4>-->
 				<a href="/challenges">Challenges</a>
@@ -22,21 +24,15 @@
 			</div>
 			<a href='/'><img src="{% static "images/logo.png" %}" height=60px ></a>
 		</nav>
-{% include "login.html" %}
-
-  <div id="content">
-  <form method="post">
-      {% csrf_token %}
-<table>
-      {{ form }}
-</table>
-      <input type="submit" value="Submit" />
-      </form>
-  </div>
-
-  <br><br>
-  	<footer>
+		<h1> Errors occured : </h1>
+                {% if errors %}
+                {% for e in errors %}
+                <p> {{ e }} </p><br>
+                {% endfor %}
+                {% endif %}
+		{% include "login.html" %}
+		<footer>
 			HackInTn
 	</footer>
-</body>
+	</body>
 </html>

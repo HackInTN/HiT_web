@@ -9,7 +9,8 @@ class Challenge(models.Model):
     flag = models.CharField(max_length=80, null=True)
     value = models.IntegerField()
     description = models.TextField()
-    docker_name = models.CharField(max_length=80)
+    docker_name = models.CharField(max_length=80, null=True)
+    is_docker = models.BooleanField()    
 
     @property
     def dict(self):
@@ -18,6 +19,7 @@ class Challenge(models.Model):
             'name' : str(self.name),
             'description' : str(self.description),
             'value' : int(self.value),
+            'is_docker' : bool(self.is_docker),
         }
 
     def getFullDict(self, user):
@@ -41,9 +43,9 @@ class User(AbstractUser):
     score = models.IntegerField(default=0)
     creation_date = models.DateTimeField(null=True)
     validation_key = models.UUIDField(default=uuid4)
-    container = models.OneToOneField(Container, null=True,
+    container = models.OneToOneField(Container, null=True, blank=True,
                                      on_delete=models.SET_NULL)
-    solved = models.ManyToManyField(Challenge)
+    solved = models.ManyToManyField(Challenge, blank=True)
 
     @property
     def dict(self):

@@ -20,6 +20,7 @@ from core import views
 
 urlpatterns = [
     url(r'^$', views.index),
+    url(r'/^$', views.index),
     url(r'^admin/', admin.site.urls),
     #url(r'^validate_account', views.user_validate),
     url(r'^reqLogin', views.reqLogin),
@@ -35,5 +36,8 @@ urlpatterns = [
     url(r'^challenges/(?P<Id>[0-9]+)/start$', views.start_challenge),
     url(r'^challenges/(?P<Id>[0-9]+)/stop$', views.stop_challenge),
     url(r'^challenges/(?P<Id>[0-9]+)/validate$', views.validate_challenge),
-    url(r'^ex/(?P<path>.*)$', views.DockerMultiplexView.as_view())
+    url(r'^ex/(?P<path>.*)$', views.DockerMultiplexView.as_view()),
+
+
+    url(r'^captcha/', include('captcha.urls')),
 ]

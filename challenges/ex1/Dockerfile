@@ -6,3 +6,4 @@ RUN service mysql start \
 	&& mysql -uhackintn -h localhost sql_app < sql_app.sql
 
 COPY SQL_app /var/www/html/
+

@@ -16,11 +16,9 @@ from .models import User, Challenge, Container
 from .forms import RegisterForm, LoginForm
 from .container import *
 
-class Failure(JsonResponse):
-    def __init__(self, msg={}):
-        json = {"action" : "failure"}
-        json.update(msg)
-        JsonResponse.__init__(self, json)
+def failure(request, d={}):
+    d["action"] = "failure"
+    return render(request, 'error.html', d)
 
 class DockerMultiplexView(View):
 
@@ -31,7 +29,7 @@ class DockerMultiplexView(View):
             container_addr = "http://"+\
             get_docker_ip(request.user.container.docker_id)
         else:
-            return Failure()
+            return failure(request, {"errors" : ['No docker challenge started']})
 
         class DockerProxyView(ProxyView):
             upstream = container_addr
@@ -51,9 +49,9 @@ def user_login(request):
                 login(request, user)
                 return redirect('/')
             else:
-                return Failure({'errors' : ['user does not exists']})
+                return failure(request, {'errors' : ['user does not exists']})
         else:
-            return Failure({'errors' : form.errors})
+            return failure(request, {'errors' : form.errors})
     if request.method == "GET":
         return render(request, 'login.html', {'form' : LoginForm()})
 
@@ -67,10 +65,9 @@ def user_register(request):
                                         request.POST['password'])
             new_user.creation_date = timezone.now()
             new_user.save()
-            #send_mail TODO
-            return redirect('/login')
+            return redirect('/')
         else:
-            return Failure({'errors' : form.errors})
+            return failure(request, {'errors' : form.errors})
     if request.method == "GET":
         return render(request, 'register.html', {'form' : RegisterForm()})
 
@@ -94,29 +91,29 @@ def get_user(request, Id):
     qs = User.objects.filter(pk=Id)
     if qs.exists():
         return render(request, 'user.html', {'user': qs[0].dict})
-    return Failure()
+    return failure(request)
 
 @login_required
 def get_challenge(request, Id):
-    qs = Challenge.objects.filter(pk=Id)
-    if qs.exists():
-        return render(request, 'challenge.html',
-                      {'challenge' : qs[0].getFullDict(request.user)})
-    return Failure()
+    if request.method == "GET":
+        qs = Challenge.objects.filter(pk=Id)
+        if qs.exists():
+            return render(request, 'challenge.html',
+                          {'challenge' : qs[0].getFullDict(request.user)})
+        else:
+            return failure(request, {'errors': ['Challenge does not exists']})
 
 @login_required
 def get_users(request):
     if request.method == "GET":
          return render(request, 'users.html',
                       {'users' : getListOf(User)})
-    return Failure()
 
 @login_required
 def get_challenges(request):
     if request.method == "GET":
         l = [c.getFullDict(request.user) for c in Challenge.objects.all()]
         return render(request, 'challenges.html', {'challenges' : l})
-    return Failure()
 
 @login_required
 def user_logout(request):
@@ -126,44 +123,44 @@ def user_logout(request):
 @login_required
 def start_challenge(request, Id):
     if request.method != "POST":
-        return
+        return failure(request, {'errors' : ['Bad http method']})
     cf = Challenge.objects.filter(pk=Id)
     if cf.exists():
         if request.user.container is None:
             container = Container(creation_date=timezone.now(), challenge=cf[0])
             try:
                 container.docker_id = create_docker(cf[0].docker_name)
-            except:
-                return Failure({'error' : 'Internal error'})
+            except Exception as e:
+                return failure(request, {'errors' : [str(e)]})
             container.save()
             request.user.container = container
             request.user.save()
             sleep(5) #waiting a few seconds before redirect is needed
             return redirect('/ex/')
         else:
-            return Failure({'error' : 'A challenge is already started',
+            return failure(request, {'errors' : ['A challenge is already started'],
                             'challenge' : request.user.container.challenge.id})
     else:
-        return Failure({'challenge' : 'not found'})
+        return failure(request, {'errors' : ['Challenge not found']})
 
 @login_required
 def stop_challenge(request, Id):
     if request.method != "POST":
-        return
+        return failure(request, {'errors' : ['Bad http method']})
     qs = Challenge.objects.filter(pk=Id)
     if qs.exists():
         if request.user.container is not None:
             try:
                 stop_docker(request.user.container.docker_id)
             except:
-                return Failure({'error' : 'Internal error'})
+                return failure(request, {'errors' : ['Internal error']})
             request.user.container.delete()
             request.user.container = None
             request.user.save()
             return redirect('/challenges')
         else:
-            return Failure({'error': 'Challenge not started'})
-    return Failure({'error' : 'Challenge does not exist'})
+            return failure(request, {'errors': ['Challenge not started']})
+    return failure(request, {'errors' : ['Challenge does not exist']})
 
 @login_required
 def validate_challenge(request, Id):
@@ -179,6 +176,6 @@ def validate_challenge(request, Id):
                  request.user.save()
                  return redirect('/challenges')
              else:
-                 return Failure({'error' : 'wrong flag'})
+                 return failure(request, {'errors' : ['wrong flag']})
         else:
-            return Failure({'error' : 'Challenge does not exist'})
+            return failure(request, {'errors' : ['Challenge does not exist']})

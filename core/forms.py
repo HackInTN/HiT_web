@@ -1,11 +1,14 @@
 from django.core.exceptions import ValidationError
 from django import forms
 
+from captcha.fields import CaptchaField
+
 from .models import User
 
 class RegisterForm(forms.ModelForm):
     email = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
+    captcha = CaptchaField()    
 
     class Meta:
         model = User

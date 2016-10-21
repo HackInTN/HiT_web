@@ -26,14 +26,14 @@
   <div id="content">
      {% for ch in challenges %}
         <table>
-             <tr><td> Name: </td> <td> {{ ch.name }} </td></tr>
-             <tr><td> Description: </td> <td> {{ ch.description }} </td></tr>
-             <tr><td> Link: </td> <td><a href="challenges/{{ch.id}}">Link</a></td></tr>
-             <tr><td> Validated: </td> <td> {{ ch.validated }} </td></tr>
-             <tr><td> Is Active: </td> <td> {{ ch.active }} </td></tr>
-             <tr><td> Value: </td> <td> {{ ch.value }} </td></tr>
+             <tr><td> {{ ch.name }} </td></tr>
+             <tr><td> {{ ch.description|linebreaks }} </td></tr>
+             <tr><td><a href="challenges/{{ch.id}}">Link</a></td></tr>
+             <tr><td> Validated: {{ ch.validated }} </td></tr>
+             <tr><td> Is Active: {{ ch.active }} </td></tr>
+             <tr><td> Value:  {{ ch.value }} </td></tr>
         </table>
-      <br><br>
+      <hr><br>
      {% endfor %}
 	  <br><br>
 	</div>
