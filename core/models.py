@@ -16,12 +16,12 @@ class Challenge(models.Model):
     @property
     def dict(self):
         return {
-            'id' : int(self.id),
-            'name' : str(self.name),
-            'description' : str(self.description),
-            'value' : int(self.value),
-            'is_docker' : bool(self.is_docker),
-            'is_binary' : bool(self.is_binary)
+            'id' : self.id,
+            'name' : self.name,
+            'description' : self.description,
+            'value' : self.value,
+            'is_docker' : self.is_docker,
+            'is_binary' : self.is_binary
         }
 
     def getFullDict(self, user):
@@ -30,17 +30,13 @@ class Challenge(models.Model):
         d['validated'] = user.isValidated(self)
         return d
 
-    def getEncryptedFlag(self, user):
-        return crypt_b64(user.validation_key.bytes,
-                       str(self.flag).encode())
-
     def check_flag(self, user, string):
-        if bool(self.is_docker):
-            return string == str(self.flag) #TODO: crypted docker flag
-        elif bool(self.is_binary):
-            return self.getEncryptedFlag(user) == string.encode()
+        if self.is_docker:
+            return string == self.flag #TODO: crypted docker flag
+        elif self.is_binary:
+            return crypt_b64(user, self) == string.encode()
         else:
-            return string == str(self.flag)
+            return string == self.flag
 
     def __str__(self):
         return self.name
@@ -65,9 +61,9 @@ class User(AbstractUser):
     def dict(self):
         return {
             'id' : self.id,
-            'username' : str(self.username),
+            'username' : self.username,
             'creation_date' : str(self.creation_date),
-            'score' : int(self.score)
+            'score' : self.score
         }
 
     def isActive(self, challenge):
